@@ -13,6 +13,7 @@ import com.mygdx.game.Sprites.Fish;
 
 /**
  * Created by Caleb on 6/11/2017.
+ * background, start button, title edits - Jeron 7/4/17
  */
 
 public class StartScreenState extends State{
