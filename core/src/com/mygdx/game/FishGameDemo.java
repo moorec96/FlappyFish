@@ -9,8 +9,8 @@ import com.mygdx.game.States.StartScreenState;
 import com.mygdx.game.States.StatesManager;
 
 public class FishGameDemo extends ApplicationAdapter {
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 800;
+	public static final int WIDTH = 1920;
+	public static final int HEIGHT = 1080;
 	public static final String TITLE = "Fish Game";
 	private StatesManager sm;
 	private SpriteBatch batch;
