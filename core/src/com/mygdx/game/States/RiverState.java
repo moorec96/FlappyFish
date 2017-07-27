@@ -1,33 +1,33 @@
 package com.mygdx.game.States;
 
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.Sprites.EnemyFish;
 import com.mygdx.game.Sprites.Fish;
 
 /**
- * Created by Caleb on 6/22/2017.
+ * Created by Caleb on 7/26/2017.
  */
 
-public class LakeState extends LevelState{
-    private final Texture bg = new Texture("lake.png");
-    public static final int lakeCamWidth = 1600;
-    public static final int lakeCamHeight = 1000;
+public class RiverState extends LevelState{
 
-    protected LakeState(StatesManager sm, Fish fish) {
-        super(sm, lakeCamWidth, lakeCamHeight,Level.LAKE, 150, fish);
-        setCamSize(lakeCamWidth,lakeCamHeight);
+    private final Texture bg = new Texture("river.jpg");
+    public static final int riverCamWidth = 3200;
+    public static final int riverCamHeight = 2000;
+
+    protected RiverState(StatesManager sm, Fish fish) {
+        super(sm, riverCamWidth, riverCamHeight,Level.RIVER, 150, fish);
+        setCamSize(riverCamWidth,riverCamHeight);
         setBackgroundImage(bg);
         this.fish = fish;
-        fish.setFishY(lakeCamHeight + fish.getFishHeight());
-        fish.setGravity(-30);
-        fish.setJumpHeight(700);
-        gameCam.setToOrtho(false,lakeCamWidth,lakeCamHeight);
+        fish.setFishY(riverCamHeight + fish.getFishHeight());
+        fish.setGravity(-60);
+        fish.setJumpHeight(1400);
+        gameCam.setToOrtho(false,riverCamWidth,riverCamHeight);
     }
 
     @Override
     public void checkFishSize() {
-        if(fish.getFishWidth() > 200){
+        if(fish.getFishWidth() > 250){
             inputEnabled = false;
             fish.turnOffGravity();
             for(EnemyFish current : enemyFishes){
@@ -39,7 +39,7 @@ public class LakeState extends LevelState{
             else {
                 //fishInPosition = false;
                 //fish.setFishY(LakeState.lakeCamHeight + fish.getPosition().y);
-                sm.set(new RiverState(sm,fish));
+                sm.set(new StartScreenState(sm));
             }
         }
     }

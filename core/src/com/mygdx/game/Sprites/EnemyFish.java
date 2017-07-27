@@ -34,6 +34,8 @@ public abstract class EnemyFish {
 
     protected Rectangle enemyCollisionBox;
 
+    protected boolean enemyMoving;
+
     public EnemyFish(int minSize, int maxSize, int startPos){
         rand = new Random();
         this.MIN_SIZE = minSize;
@@ -45,12 +47,15 @@ public abstract class EnemyFish {
         enemyFishY = getRandomNum(75,maxHeight);
         position = new Vector3(startPos,enemyFishY,0);
         enemyCollisionBox = new Rectangle(position.x + (enemyFishWidth / 20), enemyFishY - (enemyFishHeight / 20), enemyFishWidth - (enemyFishWidth / 20), enemyFishHeight - (enemyFishHeight / 20));
+        enemyMoving = false;
     }
 
     public void updateAnim(float dt){
         enemyAnimation.update(dt);
         enemyFishSprite.setRegion(enemyAnimation.getFrame());
-        position.add(enemySpeed,0,0);
+        if(enemyMoving) {
+            position.add(enemySpeed, 0, 0);
+        }
         enemyCollisionBox.setPosition(position.x + (enemyFishWidth / 20),position.y - (enemyFishHeight / 20));
     }
 
@@ -107,4 +112,17 @@ public abstract class EnemyFish {
     public void setEnemySpeed(int enemySpeed) {
         this.enemySpeed = enemySpeed;
     }
+
+    public void setEnemyY(float enemyFishY){
+        position.add(0,enemyFishY,0);
+    }
+
+    public void turnOnEnemyMovement(){
+        enemyMoving = true;
+    }
+
+    public void turnOffEnemyMovement(){
+        enemyMoving = false;
+    }
+
 }
