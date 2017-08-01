@@ -35,8 +35,8 @@ public class GameOverState extends State{
         finalScore = score;
 
 
-        gameOverImgWidth = FishGameDemo.WIDTH/15;
-        gameOverImgHeight = FishGameDemo.HEIGHT/20;
+        gameOverImgWidth = (int)gameCam.viewportWidth/15;
+        gameOverImgHeight = (int)gameCam.viewportHeight/20;
         gameOverSprite.setSize(gameOverImgWidth,gameOverImgHeight);
     }
 
@@ -55,7 +55,7 @@ public class GameOverState extends State{
     @Override
     protected void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(gameOverSprite,gameCam.position.x - gameOverImgWidth/2, gameCam.position.y);
+        sb.draw(gameOverSprite,gameCam.position.x - gameOverImgWidth, gameCam.position.y);
         text.setColor(Color.CYAN);
         text.draw(sb,"Final Score: " + finalScore,gameCam.position.x-50, gameCam.position.y - (gameOver.getHeight() + 50));
         sb.end();

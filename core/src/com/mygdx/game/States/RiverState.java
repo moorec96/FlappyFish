@@ -13,9 +13,11 @@ public class RiverState extends LevelState{
     private final Texture bg = new Texture("river.jpg");
     public static final int riverCamWidth = 3200;
     public static final int riverCamHeight = 2000;
+    public static final int fishSizeCap = 250;
+    public static final int fishGap = 300;
 
     protected RiverState(StatesManager sm, Fish fish) {
-        super(sm, riverCamWidth, riverCamHeight,Level.RIVER, 150, fish);
+        super(sm, riverCamWidth, riverCamHeight,Level.RIVER, fishGap, fish);
         setCamSize(riverCamWidth,riverCamHeight);
         setBackgroundImage(bg);
         this.fish = fish;
@@ -27,7 +29,7 @@ public class RiverState extends LevelState{
 
     @Override
     public void checkFishSize() {
-        if(fish.getFishWidth() > 250){
+        if(fish.getFishWidth() > fishSizeCap){
             inputEnabled = false;
             fish.turnOffGravity();
             for(EnemyFish current : enemyFishes){

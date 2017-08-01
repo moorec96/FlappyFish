@@ -13,9 +13,11 @@ public class LakeState extends LevelState{
     private final Texture bg = new Texture("lake.png");
     public static final int lakeCamWidth = 1600;
     public static final int lakeCamHeight = 1000;
+    public static final int fishSizeCap = 200;
+    public static final int fishGap = 150;
 
     protected LakeState(StatesManager sm, Fish fish) {
-        super(sm, lakeCamWidth, lakeCamHeight,Level.LAKE, 150, fish);
+        super(sm, lakeCamWidth, lakeCamHeight,Level.LAKE, fishGap, fish);
         setCamSize(lakeCamWidth,lakeCamHeight);
         setBackgroundImage(bg);
         this.fish = fish;
@@ -27,7 +29,7 @@ public class LakeState extends LevelState{
 
     @Override
     public void checkFishSize() {
-        if(fish.getFishWidth() > 200){
+        if(fish.getFishWidth() > fishSizeCap){
             inputEnabled = false;
             fish.turnOffGravity();
             for(EnemyFish current : enemyFishes){

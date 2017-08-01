@@ -16,9 +16,10 @@ public class PondState extends LevelState{
     private static final int pondCamWidth = 800;
     private static final int pondCamHeight = 500;
     private static final int fishSizeCap = 75;
+    private static final int fishGap = 75;
 
     protected PondState(StatesManager sm, Fish fish) {
-        super(sm,pondCamWidth,pondCamHeight,Level.POND, 75, fish);
+        super(sm,pondCamWidth,pondCamHeight,Level.POND, fishGap, fish);
        // playMusic();
         setCamSize(pondCamWidth,pondCamHeight);
         setBackgroundImage(bg);

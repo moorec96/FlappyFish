@@ -15,8 +15,10 @@ import com.mygdx.game.States.LevelState;
 
 public class Fish {
     private Texture fish;
+    private Texture collisionBoxImg;
     private Animation fishAnimation;
     private Sprite fishSprite;
+    private Sprite collisionBoxSprt;
     private Vector3 position;
     private Vector3 velocity;
     private Rectangle collisionBox;
@@ -43,7 +45,10 @@ public class Fish {
         fishSprite.setSize(fishWidth,fishHeight);
         position = new Vector3(fishX, FishGameDemo.HEIGHT + fish.getHeight(),0);
         velocity = new Vector3(0,0,0);
-        collisionBox = new Rectangle(fishX,position.y,fishSprite.getWidth(),fishSprite.getHeight());
+        collisionBox = new Rectangle(fishX + fishWidth/5,position.y + fishHeight/8,fishSprite.getWidth() - fishWidth/5,fishSprite.getHeight() - fishHeight/5);
+        collisionBoxImg = new Texture("whiteBackground.png");
+//        collisionBoxSprt = new Sprite(collisionBoxImg);
+//        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
     }
 
     public void updateAnim(float dt){
@@ -70,7 +75,8 @@ public class Fish {
         }
 
         velocity.scl(1/dt);
-        collisionBox.setPosition(position.x,position.y);
+        collisionBox.setPosition(position.x + fishWidth/5,position.y + fishHeight/8);
+       // collisionBoxSprt.setPosition(collisionBox.getX(),collisionBox.getY());
     }
 
     public void jump(){
@@ -87,7 +93,8 @@ public class Fish {
         fishHeight += height;
        // fishSprite.setScale(2);
         fishSprite.setSize(fishWidth,fishHeight);
-        collisionBox.setSize(fishWidth,fishHeight);
+        collisionBox.setSize(fishWidth - fishWidth/5,fishHeight - fishHeight/5);
+       // collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
     }
 
     //public Texture getTexture(){return fish;}
@@ -138,7 +145,11 @@ public class Fish {
         gravityOn = false;
     }
 
-//    public float getRotation(){
+    public Sprite getCollisionBoxSprt() {
+        return collisionBoxSprt;
+    }
+
+    //    public float getRotation(){
 //        return fishRotation;
 //    }
 

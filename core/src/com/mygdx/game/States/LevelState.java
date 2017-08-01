@@ -1,6 +1,7 @@
 package com.mygdx.game.States;
 
         import com.badlogic.gdx.Gdx;
+        import com.badlogic.gdx.Input;
         import com.badlogic.gdx.graphics.Color;
         import com.badlogic.gdx.graphics.Texture;
         import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -41,6 +42,8 @@ public abstract class LevelState extends State{
     protected Texture bg;
     //protected Music music;
 
+    protected boolean paused;
+
     protected LevelState(StatesManager sm, int cam_Width, int cam_Height,Level level, int enemyGap, Fish fish) {
         super(sm);
         fishInPosition = false;
@@ -59,6 +62,7 @@ public abstract class LevelState extends State{
         this.bg = bg;
         addFishes();
         setEnemySpeed();
+        paused = false;
     }
 
     protected void addFishes(){
@@ -135,36 +139,44 @@ public abstract class LevelState extends State{
                 fish.setFishY(gameCam.position.y);
             }
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            paused = true;
+        }
+        else if(Gdx.input.isKeyPressed(Input.Keys.S)){
+            paused = false;
+        }
+
     }
 
     @Override
     protected void updateAnim(float dt) {
         handleInput();
-        fish.updateAnim(dt);
-        checkFishSize();
-        if(!fishInPosition){
-            levelIntro();
-        }
-        else {
-            for (EnemyFish current : enemyFishes) {
-                if (current.getPosition().x < -75) {
-                    current.resetFish();
-                    // checkForEnemyCollisions(current);
-                }
-                current.updateAnim(dt);
-                if (current.collides(fish.getCollisionBox())) {
-                    if (fish.canEat(current)) {
-                        fish.increaseFishSize(current.getEnemyFishWidth() / 10, current.getEnemyFishHeight() / 10);
+        if(!paused) {
+            fish.updateAnim(dt);
+            checkFishSize();
+            if (!fishInPosition) {
+                levelIntro();
+            } else {
+                for (EnemyFish current : enemyFishes) {
+                    if (current.getPosition().x < -75) {
                         current.resetFish();
-                        fishEatenCount++;
-                        System.out.println("Fish eaten: " + fishEatenCount);
-                        //checkForEnemyCollisions(current);
-                    } else {
-                        fishDead = true;
-                        int score = fishEatenCount;
-                        fishEatenCount = 0;
+                        // checkForEnemyCollisions(current);
+                    }
+                    current.updateAnim(dt);
+                    if (current.collides(fish.getCollisionBox())) {
+                        if (fish.canEat(current)) {
+                            fish.increaseFishSize(current.getEnemyFishWidth() / 10, current.getEnemyFishHeight() / 10);
+                            current.resetFish();
+                            fishEatenCount++;
+                            System.out.println("Fish eaten: " + fishEatenCount);
+                            //checkForEnemyCollisions(current);
+                        } else {
+                            fishDead = true;
+                            int score = fishEatenCount;
+                            fishEatenCount = 0;
 //                    music.stop();
-                        sm.set(new GameOverState(sm, score,gameCam));
+                            sm.set(new GameOverState(sm, score, gameCam));
+                        }
                     }
                 }
             }
@@ -177,10 +189,13 @@ public abstract class LevelState extends State{
         sb.begin();
 
         sb.draw(bg,0,0,camWidth,camHeight);
+      //  sb.draw(fish.getCollisionBoxSprt(),fish.getCollisionBox().getX(),fish.getCollisionBox().getY(),fish.getCollisionBox().getWidth(),fish.getCollisionBox().getHeight());
         sb.draw(fish.getSprite(),fish.getPosition().x, fish.getPosition().y,fish.getSprite().getWidth(),fish.getSprite().getHeight());
 
         for(EnemyFish current : enemyFishes){
+            //sb.draw(current.getCollisionBoxSprt(),current.getEnemyCollisionBox().getX(),current.getEnemyCollisionBox().getY(),current.getEnemyCollisionBox().getWidth(),current.getEnemyCollisionBox().getHeight());
             sb.draw(current.getSprite(),current.getPosition().x,current.getPosition().y,current.getEnemyFishWidth(),current.getEnemyFishHeight());
+
         }
         font.setColor(Color.WHITE);
         font.getData().setScale(fontScale);
