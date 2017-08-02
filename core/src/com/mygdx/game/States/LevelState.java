@@ -19,33 +19,70 @@ package com.mygdx.game.States;
         import java.util.Random;
 
 /**
+ * Class: LevelState
+ * Purpose: Abstract state that handles all levels in the game
  * Created by Caleb on 6/22/2017.
  */
 
 public abstract class LevelState extends State{
+
+    //Player fish object
     protected Fish fish;
+
+    //Array of all enemyFish that are spawned
     protected Array<EnemyFish> enemyFishes;
+
+    //This random number determines what type of random fish are spawned in the current level
     protected Random randNum;
+
+    //Enum that helps determines what enemy fish to spawn depending on the current level
     protected Level currentLevel;
+
+    //Camera width and height depending on what level the player is on
     public static int camWidth, camHeight;
+
+    //Current amount of fish eaten by the player fish
     private static int fishEatenCount = 0;
+
+    //Horizontal space between each enemy fish
     protected static int enemyFishGap;
 
+    //Set to true if player fish collides with a larger fish
     protected boolean fishDead;
 
+    //These booleans are used in the intro and outro methods that move the fish into position
     protected boolean fishInPosition,fishOffScreen;
+
+    //Input is enabled once the levelIntro and levelOutro methods are complete and the fish is in position
     protected boolean inputEnabled;
+
+    //Set to true when the enemies have all moved off of the screen in the levelOutro method
     protected boolean enemyOffScreen;
 
+    //This font is used to display fishEatenCount and fishSize(TEMPERORY)
     protected BitmapFont font;
     protected int fontScale;
+
+    //Background image
     protected Texture bg;
+
     //protected Music music;
 
+    //If paused is true, the updateAnim does not allow any movement on the screen.
     protected boolean paused;
 
+    /**
+     * Initializes Level variables including textures and camera size
+     * @param sm - StateManager
+     * @param cam_Width
+     * @param cam_Height
+     * @param level - Level enum
+     * @param enemyGap
+     * @param fish
+     */
     protected LevelState(StatesManager sm, int cam_Width, int cam_Height,Level level, int enemyGap, Fish fish) {
         super(sm);
+
         fishInPosition = false;
         fishOffScreen = false;
         inputEnabled = false;
@@ -65,6 +102,10 @@ public abstract class LevelState extends State{
         paused = false;
     }
 
+    /**
+     * Spawns enemy fish depending on what Level enum was passed into the constructor
+     *  - Fish types are spawned at random
+     */
     protected void addFishes(){
         if(currentLevel.equals(Level.POND)) {
             for (int i = 0; i < 20; i++) {
@@ -102,6 +143,9 @@ public abstract class LevelState extends State{
         }
     }
 
+    /**
+     * Speed varies depending on size of level
+     */
     public void setEnemySpeed(){
         if(currentLevel.equals(Level.POND)){
             for(EnemyFish current: enemyFishes){
@@ -120,15 +164,27 @@ public abstract class LevelState extends State{
         }
     }
 
+    /**
+     * Camera size increases with each letter
+     * @param camWidth
+     * @param camHeight
+     */
     protected void setCamSize(int camWidth, int camHeight){
         this.camWidth = camWidth;
         this.camHeight = camHeight;
     }
 
+    /**
+     * Level background image
+     * @param bg
+     */
     protected void setBackgroundImage(Texture bg){
         this.bg = bg;
     }
 
+    /**
+     * Allows player to jump, pause and unpause game
+     */
     @Override
     protected void handleInput() {
         if(Gdx.input.justTouched()){
@@ -148,6 +204,11 @@ public abstract class LevelState extends State{
 
     }
 
+    /**
+     * Handles player and enemy movement, and checks for collisions. If there is a collision the enemy fish is eather eaten,
+     * or the player dies and the GameOverState is pushed
+     * @param dt
+     */
     @Override
     protected void updateAnim(float dt) {
         handleInput();
@@ -183,6 +244,10 @@ public abstract class LevelState extends State{
         }
     }
 
+    /**
+     * Draws all textures and sprites on the screen, as well as the fonts
+     * @param sb
+     */
     @Override
     protected void render(SpriteBatch sb) {
         sb.setProjectionMatrix(gameCam.combined);
@@ -205,8 +270,14 @@ public abstract class LevelState extends State{
         sb.end();
     }
 
+    /**
+     * Abstract class that is defined in each of this classes subclasses
+     */
     public abstract void checkFishSize();
 
+    /**
+     * Moves the player fish to the center of the screen(Vertically)
+     */
     public void levelIntro(){
         if(!fishInPosition){
             fish.addFishY(-(camHeight/250));
@@ -221,6 +292,10 @@ public abstract class LevelState extends State{
         }
     }
 
+    /**
+     * Moves the enemy fish off the screen and the player fish to the top of the screen
+     * @param highestFish
+     */
     public void levelOutro(EnemyFish highestFish){
         if(!enemyOffScreen){
             for(EnemyFish current : enemyFishes){
@@ -241,6 +316,10 @@ public abstract class LevelState extends State{
         }
     }
 
+    /**
+     * Determines what enemyFish is the highest on the screen so that the levelOutro knows what fish to watch until it is off of the screen
+     * @return
+     */
     public EnemyFish findHighestFish(){
         EnemyFish highestFish = enemyFishes.get(0);
         for(EnemyFish current : enemyFishes){
@@ -251,6 +330,9 @@ public abstract class LevelState extends State{
         return highestFish;
     }
 
+    /**
+     * Disposes of textures
+     */
     @Override
     protected void dispose() {
         if(fishDead){
