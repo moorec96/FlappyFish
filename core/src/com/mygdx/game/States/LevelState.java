@@ -6,7 +6,9 @@ package com.mygdx.game.States;
         import com.badlogic.gdx.graphics.Texture;
         import com.badlogic.gdx.graphics.g2d.BitmapFont;
         import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+        import com.badlogic.gdx.math.Rectangle;
         import com.badlogic.gdx.utils.Array;
+        import com.mygdx.game.FishGameDemo;
         import com.mygdx.game.Sprites.EnemyFish;
         import com.mygdx.game.Sprites.Fish;
         import com.mygdx.game.Sprites.Salmon;
@@ -39,7 +41,8 @@ public abstract class LevelState extends State{
     protected Level currentLevel;
 
     //Camera width and height depending on what level the player is on
-    public static int camWidth, camHeight;
+    public static final int camWidth = 1920;
+    public static final int camHeight = 1080;
 
     //Current amount of fish eaten by the player fish
     private static int fishEatenCount = 0;
@@ -66,6 +69,14 @@ public abstract class LevelState extends State{
     //Background image
     protected Texture bg;
 
+    protected Texture pauseBtn;
+    protected Rectangle pauseBtnBox;
+
+    protected Texture startBtn;
+    private float sbWidth = FishGameDemo.WIDTH/10;
+    private float sbHeight = FishGameDemo.HEIGHT/10;
+    protected Rectangle startBtnBox;
+
     //protected Music music;
 
     //If paused is true, the updateAnim does not allow any movement on the screen.
@@ -74,21 +85,17 @@ public abstract class LevelState extends State{
     /**
      * Initializes Level variables including textures and camera size
      * @param sm - StateManager
-     * @param cam_Width
-     * @param cam_Height
      * @param level - Level enum
      * @param enemyGap
      * @param fish
      */
-    protected LevelState(StatesManager sm, int cam_Width, int cam_Height,Level level, int enemyGap, Fish fish) {
+    protected LevelState(StatesManager sm, Level level, int enemyGap, Fish fish) {
         super(sm);
-
+        gameCam.setToOrtho(false,camWidth,camHeight);
         fishInPosition = false;
         fishOffScreen = false;
         inputEnabled = false;
         enemyOffScreen = false;
-        camWidth = cam_Width;
-        camHeight = cam_Height;
         this.fish = fish;
         randNum = new Random();
         enemyFishes = new Array<EnemyFish>();
@@ -96,9 +103,15 @@ public abstract class LevelState extends State{
         enemyFishGap = enemyGap;
         fishDead = false;
         font = new BitmapFont();
-        this.bg = bg;
+        bg = bg;
+        pauseBtn = new Texture("pausebtn.png");
+        pauseBtnBox = new Rectangle(0,0,140,140);
+        startBtn = new Texture("playbtn.png");
+        startBtnBox = new Rectangle(gameCam.position.x - sbWidth/2, gameCam.position.y - sbHeight/2, sbWidth, sbHeight);
         addFishes();
         setEnemySpeed();
+        fish.resetFishSize();
+
         paused = false;
     }
 
@@ -117,7 +130,6 @@ public abstract class LevelState extends State{
                     enemyFishes.add(new Minot(camWidth + (i * enemyFishGap)));
                 }
             }
-            fontScale = 1;
         }
         else if(currentLevel.equals(Level.LAKE)){
             for (int i = 0; i < 20; i++) {
@@ -128,7 +140,6 @@ public abstract class LevelState extends State{
                     enemyFishes.add(new Catfish(camWidth + (i * enemyFishGap)));
                 }
             }
-            fontScale = 2;
         }
         else if(currentLevel.equals(Level.RIVER)){
             for (int i = 0; i < 20; i++) {
@@ -139,7 +150,6 @@ public abstract class LevelState extends State{
                     enemyFishes.add(new Sturgeon(camWidth + (i * enemyFishGap)));
                 }
             }
-            fontScale = 3;
         }
     }
 
@@ -149,17 +159,17 @@ public abstract class LevelState extends State{
     public void setEnemySpeed(){
         if(currentLevel.equals(Level.POND)){
             for(EnemyFish current: enemyFishes){
-                current.setEnemySpeed(-3);
+                current.setEnemySpeed(-6);
             }
         }
         else if(currentLevel.equals(Level.LAKE)){
             for(EnemyFish current: enemyFishes){
-                current.setEnemySpeed(-6);
+                current.setEnemySpeed(-7);
             }
         }
         else if(currentLevel.equals(Level.RIVER)){
             for(EnemyFish current: enemyFishes){
-                current.setEnemySpeed(-12);
+                current.setEnemySpeed(-9);
             }
         }
     }
@@ -169,10 +179,10 @@ public abstract class LevelState extends State{
      * @param camWidth
      * @param camHeight
      */
-    protected void setCamSize(int camWidth, int camHeight){
-        this.camWidth = camWidth;
-        this.camHeight = camHeight;
-    }
+//    protected void setCamSize(int camWidth, int camHeight){
+//        this.camWidth = camWidth;
+//        this.camHeight = camHeight;
+//    }
 
     /**
      * Level background image
@@ -187,20 +197,31 @@ public abstract class LevelState extends State{
      */
     @Override
     protected void handleInput() {
-        if(Gdx.input.justTouched()){
-            if(inputEnabled) {
-                fish.jump();
+        if(Gdx.input.justTouched()) {
+            if(paused){
+                if(startBtnBox.contains(Gdx.input.getX(),Gdx.input.getY())){
+                    paused = false;
+                }
             }
-            else{
+            else if(inputEnabled) {
+                if(pauseBtnBox.contains(Gdx.input.getX(),Gdx.input.getY())){
+                    paused = true;
+                }
+                else{
+                    fish.jump();
+                }
+            }
+            else {
                 fish.setFishY(gameCam.position.y);
             }
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            paused = true;
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            paused = false;
-        }
+
+//        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+//            paused = true;
+//        }
+//        else if(Gdx.input.isKeyPressed(Input.Keys.S)){
+//            paused = false;
+//        }
 
     }
 
@@ -217,16 +238,17 @@ public abstract class LevelState extends State{
             checkFishSize();
             if (!fishInPosition) {
                 levelIntro();
-            } else {
+            }
+            else {
                 for (EnemyFish current : enemyFishes) {
                     if (current.getPosition().x < -75) {
                         current.resetFish();
                         // checkForEnemyCollisions(current);
                     }
                     current.updateAnim(dt);
-                    if (current.collides(fish.getCollisionBox())) {
+                    if (current.collides(fish.getCollisionBox()) && fish.isCollisionOn()) {
                         if (fish.canEat(current)) {
-                            fish.increaseFishSize(current.getEnemyFishWidth() / 10, current.getEnemyFishHeight() / 10);
+                            fish.increaseFishSize(current.getEnemyFishWidth() / 10, current.getEnemyFishHeight() / 10, current.getEnemyFishWeight());
                             current.resetFish();
                             fishEatenCount++;
                             System.out.println("Fish eaten: " + fishEatenCount);
@@ -252,7 +274,6 @@ public abstract class LevelState extends State{
     protected void render(SpriteBatch sb) {
         sb.setProjectionMatrix(gameCam.combined);
         sb.begin();
-
         sb.draw(bg,0,0,camWidth,camHeight);
       //  sb.draw(fish.getCollisionBoxSprt(),fish.getCollisionBox().getX(),fish.getCollisionBox().getY(),fish.getCollisionBox().getWidth(),fish.getCollisionBox().getHeight());
         sb.draw(fish.getSprite(),fish.getPosition().x, fish.getPosition().y,fish.getSprite().getWidth(),fish.getSprite().getHeight());
@@ -263,9 +284,13 @@ public abstract class LevelState extends State{
 
         }
         font.setColor(Color.WHITE);
-        font.getData().setScale(fontScale);
-        font.draw(sb,"Fish Eaten: " + fishEatenCount,50,camHeight - 50);
-        font.draw(sb,"Fish Size: " + fish.getFishWidth() + " lbs.",50, camHeight - 90);
+        font.getData().setScale(2);
+        font.draw(sb,"Fish Eaten: " + fishEatenCount,150,camHeight - 50);
+        font.draw(sb,"Fish Size: " + fish.getFishWeight() + " lbs.",150, camHeight - 90);
+        sb.draw(pauseBtn,35,camHeight - 110,75,75);
+        if(paused){
+            sb.draw(startBtn, gameCam.position.x - sbWidth/2, gameCam.position.y - sbHeight/2, sbWidth, sbHeight);
+        }
 
         sb.end();
     }
@@ -286,6 +311,7 @@ public abstract class LevelState extends State{
             fishInPosition = true;
             fish.turnOnGravity();
             inputEnabled = true;
+            fish.setCollision(true);
             for(EnemyFish current : enemyFishes){
                current.turnOnEnemyMovement();
             }
@@ -297,6 +323,7 @@ public abstract class LevelState extends State{
      * @param highestFish
      */
     public void levelOutro(EnemyFish highestFish){
+        fish.setCollision(false);
         if(!enemyOffScreen){
             for(EnemyFish current : enemyFishes){
                 current.setEnemyY(-(camHeight / 250));
