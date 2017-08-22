@@ -54,7 +54,7 @@ public abstract class LevelState extends State{
     protected boolean fishDead;
 
     //These booleans are used in the intro and outro methods that move the fish into position
-    protected boolean fishInPosition,fishOffScreen;
+    protected boolean fishInPosition,fishOffScreen, inIntro;
 
     //Input is enabled once the levelIntro and levelOutro methods are complete and the fish is in position
     protected boolean inputEnabled;
@@ -96,6 +96,7 @@ public abstract class LevelState extends State{
         fishOffScreen = false;
         inputEnabled = false;
         enemyOffScreen = false;
+        inIntro = true;
         this.fish = fish;
         randNum = new Random();
         enemyFishes = new Array<EnemyFish>();
@@ -212,7 +213,9 @@ public abstract class LevelState extends State{
                 }
             }
             else {
-                fish.setFishY(gameCam.position.y);
+                if(inIntro) {
+                    fish.setFishY(gameCam.position.y);
+                }
             }
         }
 
@@ -311,6 +314,7 @@ public abstract class LevelState extends State{
             fishInPosition = true;
             fish.turnOnGravity();
             inputEnabled = true;
+            inIntro = false;
             fish.setCollision(true);
             for(EnemyFish current : enemyFishes){
                current.turnOnEnemyMovement();
@@ -336,6 +340,7 @@ public abstract class LevelState extends State{
             if (!fishOffScreen) {
                 fish.addFishY(camHeight / 250);
                 fish.addFishY(camHeight / 250);
+
             }
             if (fish.getPosition().y + fish.getFishHeight() >= camHeight) {
                 fishOffScreen = true;
@@ -366,7 +371,10 @@ public abstract class LevelState extends State{
             fish.dispose();
         }
         font.dispose();
-       // bg.dispose();
+        bg.dispose();
+        for(int i = 0; i < 20; i++){
+            enemyFishes.get(i).getSprite().getTexture().dispose();
+        }
 //        for(EnemyFish current : enemyFishes){
 //            current.getSprite().getTexture().dispose();
 //        }
