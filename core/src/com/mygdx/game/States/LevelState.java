@@ -45,10 +45,10 @@ public abstract class LevelState extends State{
     public static final int camHeight = 1080;
 
     //Current amount of fish eaten by the player fish
-    private static int fishEatenCount = 0;
+    private int fishEatenCount = 0;
 
     //Horizontal space between each enemy fish
-    protected static int enemyFishGap;
+    protected int enemyFishGap;
 
     //Set to true if player fish collides with a larger fish
     protected boolean fishDead;
