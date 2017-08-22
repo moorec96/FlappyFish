@@ -18,7 +18,7 @@ public class Fish {
     private Texture collisionBoxImg;
     private Animation fishAnimation;
     private Sprite fishSprite;
-    private Sprite collisionBoxSprt;
+    //private Sprite collisionBoxSprt;
     private Vector3 position;
     private Vector3 velocity;
     private Rectangle collisionBox;
@@ -38,6 +38,8 @@ public class Fish {
     private boolean gravityOn;
     private boolean collisionOn;
 
+    private float health;
+
   //  private float fishRotation = 0;
 
     public Fish(){
@@ -56,6 +58,7 @@ public class Fish {
         collisionBoxImg = new Texture("whiteBackground.png");
         gravity = -30;
         jumpHeight = 700;
+        health = 1;
 //        collisionBoxSprt = new Sprite(collisionBoxImg);
 //        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
     }
@@ -170,12 +173,24 @@ public class Fish {
         collisionOn = collisionStatus;
     }
 
-    public Sprite getCollisionBoxSprt() {
-        return collisionBoxSprt;
-    }
+//    public Sprite getCollisionBoxSprt() {
+//        return collisionBoxSprt;
+//    }
 
     public int getFishWeight() {
         return fishWeight;
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public void adjustHealth(float healthAdjusment){
+        health += healthAdjusment;
+    }
+
+    public void resetHealth(){
+        health = 1;
     }
 
     //    public float getRotation(){

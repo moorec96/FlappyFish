@@ -82,6 +82,11 @@ public abstract class LevelState extends State{
     //If paused is true, the updateAnim does not allow any movement on the screen.
     protected boolean paused;
 
+    //Health bar
+    protected Texture healthBar;
+    protected boolean liveHealth;
+
+
     /**
      * Initializes Level variables including textures and camera size
      * @param sm - StateManager
@@ -112,7 +117,8 @@ public abstract class LevelState extends State{
         addFishes();
         setEnemySpeed();
         fish.resetFishSize();
-
+        healthBar = new Texture("whiteBackground.png");
+        liveHealth = false;
         paused = false;
     }
 
@@ -213,14 +219,14 @@ public abstract class LevelState extends State{
                 }
             }
             else {
-                if(inIntro) {
+                if (inIntro) {
                     fish.setFishY(gameCam.position.y);
                 }
             }
         }
 
-//        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-//            paused = true;
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
+//           health -= 0.1f;
 //        }
 //        else if(Gdx.input.isKeyPressed(Input.Keys.S)){
 //            paused = false;
@@ -236,9 +242,16 @@ public abstract class LevelState extends State{
     @Override
     protected void updateAnim(float dt) {
         handleInput();
+        if(liveHealth) {
+            fish.adjustHealth(-0.0008f);
+        }
+        if(fish.getHealth() > 1){
+            fish.resetHealth();
+        }
         if(!paused) {
             fish.updateAnim(dt);
             checkFishSize();
+            checkFishHealth();
             if (!fishInPosition) {
                 levelIntro();
             }
@@ -252,16 +265,16 @@ public abstract class LevelState extends State{
                     if (current.collides(fish.getCollisionBox()) && fish.isCollisionOn()) {
                         if (fish.canEat(current)) {
                             fish.increaseFishSize(current.getEnemyFishWidth() / 10, current.getEnemyFishHeight() / 10, current.getEnemyFishWeight());
+
+                            float adjustment = 0.1f * (fish.getFishWidth()/current.getEnemyFishWidth());
+                            fish.adjustHealth(adjustment);
                             current.resetFish();
+
                             fishEatenCount++;
                             System.out.println("Fish eaten: " + fishEatenCount);
                             //checkForEnemyCollisions(current);
                         } else {
-                            fishDead = true;
-                            int score = fishEatenCount;
-                            fishEatenCount = 0;
-//                    music.stop();
-                            sm.set(new GameOverState(sm, score, gameCam));
+                           gameOver();
                         }
                     }
                 }
@@ -286,6 +299,24 @@ public abstract class LevelState extends State{
             sb.draw(current.getSprite(),current.getPosition().x,current.getPosition().y,current.getEnemyFishWidth(),current.getEnemyFishHeight());
 
         }
+
+        //Health Bar
+        if(fish.getHealth() > 0.5f) {
+            sb.setColor(Color.GREEN);
+        }
+        else if(fish.getHealth() > 0.25f){
+            sb.setColor(Color.YELLOW);
+        }
+        else if(fish.getHealth() > 0.15f){
+            sb.setColor(Color.ORANGE);
+        }
+        else if(fish.getHealth() > 0){
+            sb.setColor(Color.RED);
+        }
+        sb.draw(healthBar,0,0,Gdx.graphics.getWidth() * fish.getHealth(), 10);
+        sb.setColor(Color.WHITE);
+
+
         font.setColor(Color.WHITE);
         font.getData().setScale(2);
         font.draw(sb,"Fish Eaten: " + fishEatenCount,150,camHeight - 50);
@@ -303,6 +334,19 @@ public abstract class LevelState extends State{
      */
     public abstract void checkFishSize();
 
+    public void checkFishHealth(){
+        if(fish.getHealth() <= 0){
+            gameOver();
+        }
+    }
+
+    public void gameOver(){
+        fishDead = true;
+        int score = fishEatenCount;
+        fishEatenCount = 0;
+        sm.set(new GameOverState(sm, score, gameCam));
+    }
+
     /**
      * Moves the player fish to the center of the screen(Vertically)
      */
@@ -315,6 +359,8 @@ public abstract class LevelState extends State{
             fish.turnOnGravity();
             inputEnabled = true;
             inIntro = false;
+            fish.resetHealth();
+            liveHealth = true;
             fish.setCollision(true);
             for(EnemyFish current : enemyFishes){
                current.turnOnEnemyMovement();
@@ -328,6 +374,7 @@ public abstract class LevelState extends State{
      */
     public void levelOutro(EnemyFish highestFish){
         fish.setCollision(false);
+        liveHealth = false;
         if(!enemyOffScreen){
             for(EnemyFish current : enemyFishes){
                 current.setEnemyY(-(camHeight / 250));
