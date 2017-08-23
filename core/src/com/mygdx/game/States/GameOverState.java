@@ -31,7 +31,8 @@ public class GameOverState extends State{
     protected int finalScore;
 
     //Width and height of game over button
-    protected int gameOverImgWidth, gameOverImgHeight;
+    private float gameOverImgWidth = FishGameDemo.WIDTH/6;
+    private float gameOverImgHeight= FishGameDemo.HEIGHT/10;
 
     /**
      * Sets gameCam size
@@ -44,16 +45,10 @@ public class GameOverState extends State{
         //gameCam.setToOrtho(false,800,500);
         this.gameCam = gameCam;
         gameOver = new Texture("gameover.png");
-        gameOverSprite = new Sprite(gameOver);
 
         // bg = new Texture("kysen.jpg");
         text = new BitmapFont();
         finalScore = score;
-
-
-        gameOverImgWidth = (int)gameCam.viewportWidth/15;
-        gameOverImgHeight = (int)gameCam.viewportHeight/20;
-        gameOverSprite.setSize(gameOverImgWidth,gameOverImgHeight);
     }
 
     @Override
@@ -71,9 +66,11 @@ public class GameOverState extends State{
     @Override
     protected void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(gameOverSprite,gameCam.position.x - gameOverImgWidth, gameCam.position.y);
+      //  sb.draw(gameOver,gameCam.position.x - gameOverImgWidth, gameCam.position.y);
+        sb.draw(gameOver, gameCam.position.x - gameOverImgWidth/2, gameCam.position.y - gameOverImgHeight/2, gameOverImgWidth, gameOverImgHeight);
         text.setColor(Color.CYAN);
-        text.draw(sb,"Final Score: " + finalScore,gameCam.position.x-50, gameCam.position.y - (gameOver.getHeight() + 50));
+        text.getData().setScale(2);
+        text.draw(sb,"Final Score: " + finalScore,gameCam.position.x - gameOverImgWidth/2, gameCam.position.y - (gameOver.getHeight() + 50));
         sb.end();
     }
 

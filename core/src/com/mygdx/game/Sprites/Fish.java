@@ -77,8 +77,8 @@ public class Fish {
             position.add(0, velocity.y, 0);
         }
 
-        if(position.y < 0){
-            position.y = 0;
+        if(position.y < 10){
+            position.y = 10;
         }
 
 

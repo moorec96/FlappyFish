@@ -83,6 +83,7 @@ public abstract class EnemyFish {
         enemyFishHeight = getRandomNum(MIN_SIZE,MAX_SIZE);
         enemyFishWidth = enemyFishHeight + 5;
         enemyCollisionBox.setSize(enemyFishWidth - enemyFishWidth/5,enemyFishHeight - enemyFishHeight/5);
+        enemyFishWeight = enemyFishWidth / 10;
         //collisionBoxSprt.setSize(enemyCollisionBox.getWidth(),enemyCollisionBox.getHeight());
     }
 

@@ -102,14 +102,15 @@ public abstract class LevelState extends State{
         inputEnabled = false;
         enemyOffScreen = false;
         inIntro = true;
+        liveHealth = false;
+        paused = false;
+        fishDead = false;
         this.fish = fish;
         randNum = new Random();
         enemyFishes = new Array<EnemyFish>();
         currentLevel = level;
         enemyFishGap = enemyGap;
-        fishDead = false;
         font = new BitmapFont();
-        bg = bg;
         pauseBtn = new Texture("pausebtn.png");
         pauseBtnBox = new Rectangle(0,0,140,140);
         startBtn = new Texture("playbtn.png");
@@ -118,8 +119,7 @@ public abstract class LevelState extends State{
         setEnemySpeed();
         fish.resetFishSize();
         healthBar = new Texture("whiteBackground.png");
-        liveHealth = false;
-        paused = false;
+
     }
 
     /**
@@ -242,8 +242,8 @@ public abstract class LevelState extends State{
     @Override
     protected void updateAnim(float dt) {
         handleInput();
-        if(liveHealth) {
-            fish.adjustHealth(-0.0008f);
+        if(liveHealth && !paused) {
+            fish.adjustHealth(-0.0006f);
         }
         if(fish.getHealth() > 1){
             fish.resetHealth();
@@ -264,7 +264,7 @@ public abstract class LevelState extends State{
                     current.updateAnim(dt);
                     if (current.collides(fish.getCollisionBox()) && fish.isCollisionOn()) {
                         if (fish.canEat(current)) {
-                            fish.increaseFishSize(current.getEnemyFishWidth() / 10, current.getEnemyFishHeight() / 10, current.getEnemyFishWeight());
+                            fish.increaseFishSize(current.getEnemyFishWidth() / 20, current.getEnemyFishHeight() / 20, current.getEnemyFishWeight());
 
                             float adjustment = 0.1f * (fish.getFishWidth()/current.getEnemyFishWidth());
                             fish.adjustHealth(adjustment);
