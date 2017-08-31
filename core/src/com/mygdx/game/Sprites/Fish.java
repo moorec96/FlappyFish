@@ -123,6 +123,14 @@ public class Fish {
         collisionBox.setSize(fishWidth - fishWidth/5,fishHeight - fishHeight/5);
     }
 
+    public void throwUp(){
+        fishWidth -= fishWidth/5;
+        fishHeight -= fishHeight/5;
+        fishSprite.setSize(fishWidth,fishHeight);
+        collisionBox.setSize(fishWidth - fishWidth/5,fishHeight - fishHeight/5);
+        fishWeight -= fishWeight/5;
+    }
+
     public Sprite getSprite(){return fishSprite;}
 
     public Vector3 getPosition(){return position;}

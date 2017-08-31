@@ -12,7 +12,7 @@ import java.util.Random;
  */
 
 public class PondState extends LevelState{
-    private final Texture bg = new Texture("ocean.png");
+    private final Texture bg = new Texture("pond.jpg");
     private static final int fishSizeCap = 150;
     private static final int fishGap = 150;
 

@@ -10,7 +10,7 @@ import com.mygdx.game.Sprites.Fish;
 
 public class RiverState extends LevelState{
 
-    private final Texture bg = new Texture("river.jpg");
+    private final Texture bg = new Texture("forest.png");
     public static final int fishSizeCap = 250;
     public static final int fishGap = 300;
 

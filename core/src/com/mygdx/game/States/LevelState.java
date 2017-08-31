@@ -11,6 +11,7 @@ package com.mygdx.game.States;
         import com.mygdx.game.FishGameDemo;
         import com.mygdx.game.Sprites.EnemyFish;
         import com.mygdx.game.Sprites.Fish;
+        import com.mygdx.game.Sprites.Ipecac;
         import com.mygdx.game.Sprites.Salmon;
         import com.mygdx.game.Sprites.Sturgeon;
         import com.mygdx.game.Sprites.Trout;
@@ -83,6 +84,9 @@ public abstract class LevelState extends State{
     protected Texture healthBar;
     protected boolean liveHealth;
 
+    private String currentLevelName;
+
+    private Ipecac ipecac;
 
     /**
      * Initializes Level variables including textures and camera size
@@ -115,7 +119,7 @@ public abstract class LevelState extends State{
         setEnemySpeed();
         fish.resetFishSize();
         healthBar = new Texture("whiteBackground.png");
-
+        ipecac = new Ipecac(FishGameDemo.WIDTH*2);
     }
 
     /**
@@ -124,6 +128,7 @@ public abstract class LevelState extends State{
      */
     protected void addFishes(){
         if(currentLevel.equals(Level.POND)) {
+            currentLevelName = "Pond";
             for (int i = 0; i < 20; i++) {
                 int num = randNum.nextInt(10) + 1;
                 if (num % 2 == 0) {
@@ -135,6 +140,7 @@ public abstract class LevelState extends State{
             }
         }
         else if(currentLevel.equals(Level.LAKE)){
+            currentLevelName = "Lake";
             for (int i = 0; i < 20; i++) {
                 int num = randNum.nextInt(10) + 1;
                 if (num % 2 == 0) {
@@ -145,6 +151,7 @@ public abstract class LevelState extends State{
             }
         }
         else if(currentLevel.equals(Level.RIVER)){
+            currentLevelName = " River";
             for (int i = 0; i < 20; i++) {
                 int num = randNum.nextInt(10) + 1;
                 if (num % 2 == 0) {
@@ -234,6 +241,7 @@ public abstract class LevelState extends State{
             fish.updateAnim(dt);
             checkFishSize();
             checkFishHealth();
+            ipecac.move();
             if (!fishInPosition) {
                 levelIntro();
             }
@@ -260,6 +268,10 @@ public abstract class LevelState extends State{
                         }
                     }
                 }
+                if(ipecac.getCollisionBox().overlaps(fish.getCollisionBox()) && !ipecac.isEmpty()){
+                    fish.throwUp();
+                    ipecac.setEmpty(true);
+                }
             }
         }
 
@@ -278,8 +290,9 @@ public abstract class LevelState extends State{
         for(EnemyFish current : enemyFishes){
             //sb.draw(current.getCollisionBoxSprt(),current.getEnemyCollisionBox().getX(),current.getEnemyCollisionBox().getY(),current.getEnemyCollisionBox().getWidth(),current.getEnemyCollisionBox().getHeight());
             sb.draw(current.getSprite(),current.getPosition().x,current.getPosition().y,current.getEnemyFishWidth(),current.getEnemyFishHeight());
-
         }
+
+        sb.draw(ipecac.getIpecacImg(),ipecac.getX(),ipecac.getY(),75,75);
 
         //Health Bar
         if(fish.getHealth() > 0.5f) {
@@ -300,6 +313,7 @@ public abstract class LevelState extends State{
 
         font.setColor(Color.WHITE);
         font.getData().setScale(2);
+        font.draw(sb,currentLevelName,150,camHeight - 10);
         font.draw(sb,"Fish Eaten: " + fishEatenCount,150,camHeight - 50);
         font.draw(sb,"Fish Size: " + fish.getFishWeight() + " lbs.",150, camHeight - 90);
         sb.draw(pauseBtn,35,camHeight - 110,75,75);
