@@ -79,9 +79,6 @@ public abstract class LevelState extends State{
 
     //protected Music music;
 
-    //If paused is true, the updateAnim does not allow any movement on the screen.
-    protected boolean paused;
-
     //Health bar
     protected Texture healthBar;
     protected boolean liveHealth;
@@ -103,7 +100,6 @@ public abstract class LevelState extends State{
         enemyOffScreen = false;
         inIntro = true;
         liveHealth = false;
-        paused = false;
         fishDead = false;
         this.fish = fish;
         randNum = new Random();
@@ -205,14 +201,9 @@ public abstract class LevelState extends State{
     @Override
     protected void handleInput() {
         if(Gdx.input.justTouched()) {
-            if(paused){
-                if(startBtnBox.contains(Gdx.input.getX(),Gdx.input.getY())){
-                    paused = false;
-                }
-            }
-            else if(inputEnabled) {
+            if(inputEnabled) {
                 if(pauseBtnBox.contains(Gdx.input.getX(),Gdx.input.getY())){
-                    paused = true;
+                    sm.push(new PauseState(sm));
                 }
                 else{
                     fish.jump();
@@ -224,14 +215,6 @@ public abstract class LevelState extends State{
                 }
             }
         }
-
-//        if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
-//           health -= 0.1f;
-//        }
-//        else if(Gdx.input.isKeyPressed(Input.Keys.S)){
-//            paused = false;
-//        }
-
     }
 
     /**
@@ -242,13 +225,12 @@ public abstract class LevelState extends State{
     @Override
     protected void updateAnim(float dt) {
         handleInput();
-        if(liveHealth && !paused) {
+        if(liveHealth) {
             fish.adjustHealth(-0.0006f);
         }
         if(fish.getHealth() > 1){
             fish.resetHealth();
         }
-        if(!paused) {
             fish.updateAnim(dt);
             checkFishSize();
             checkFishHealth();
@@ -280,7 +262,6 @@ public abstract class LevelState extends State{
                 }
             }
         }
-    }
 
     /**
      * Draws all textures and sprites on the screen, as well as the fonts
@@ -322,10 +303,6 @@ public abstract class LevelState extends State{
         font.draw(sb,"Fish Eaten: " + fishEatenCount,150,camHeight - 50);
         font.draw(sb,"Fish Size: " + fish.getFishWeight() + " lbs.",150, camHeight - 90);
         sb.draw(pauseBtn,35,camHeight - 110,75,75);
-        if(paused){
-            sb.draw(startBtn, gameCam.position.x - sbWidth/2, gameCam.position.y - sbHeight/2, sbWidth, sbHeight);
-        }
-
         sb.end();
     }
 
