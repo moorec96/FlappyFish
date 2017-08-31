@@ -19,8 +19,6 @@ public class GameOverState extends State{
 
     //Game over button texture and sprite
     protected Texture gameOver;
-    protected Sprite gameOverSprite;
-
 
   //  protected Texture bg;
 
@@ -38,12 +36,10 @@ public class GameOverState extends State{
      * Sets gameCam size
      * @param sm
      * @param score
-     * @param gameCam
      */
-    protected GameOverState(StatesManager sm, int score, OrthographicCamera gameCam) {
+    protected GameOverState(StatesManager sm, int score) {
         super(sm);
-        //gameCam.setToOrtho(false,800,500);
-        this.gameCam = gameCam;
+        gameCam.setToOrtho(false,FishGameDemo.WIDTH,FishGameDemo.HEIGHT);
         gameOver = new Texture("gameover.png");
 
         // bg = new Texture("kysen.jpg");
@@ -66,7 +62,6 @@ public class GameOverState extends State{
     @Override
     protected void render(SpriteBatch sb) {
         sb.begin();
-      //  sb.draw(gameOver,gameCam.position.x - gameOverImgWidth, gameCam.position.y);
         sb.draw(gameOver, gameCam.position.x - gameOverImgWidth/2, gameCam.position.y - gameOverImgHeight/2, gameOverImgWidth, gameOverImgHeight);
         text.setColor(Color.CYAN);
         text.getData().setScale(2);

@@ -344,7 +344,7 @@ public abstract class LevelState extends State{
         fishDead = true;
         int score = fishEatenCount;
         fishEatenCount = 0;
-        sm.set(new GameOverState(sm, score, gameCam));
+        sm.set(new GameOverState(sm, score));
     }
 
     /**
