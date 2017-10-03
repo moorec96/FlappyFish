@@ -47,6 +47,10 @@ public class StatesManager{
         gameStates.push(state);
     }
 
+    public void remove(int index){
+        gameStates.remove(index);
+    }
+
     /**
      * Calls the current states updateAnim function
      * @param dt

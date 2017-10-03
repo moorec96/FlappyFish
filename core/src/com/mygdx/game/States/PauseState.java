@@ -12,15 +12,19 @@ import com.mygdx.game.FishGameDemo;
 
 public class PauseState extends State{
     private Texture startBtn;
+    private Texture restartBtn;
+    private Texture bg;
 
     private float sbWidth = FishGameDemo.WIDTH/10;
     private float sbHeight = FishGameDemo.HEIGHT/10;
 
 
-    protected PauseState(StatesManager sm) {
+    protected PauseState(StatesManager sm,Texture bg) {
         super(sm);
         gameCam.setToOrtho(false,FishGameDemo.WIDTH,FishGameDemo.HEIGHT);
         startBtn = new Texture("playbtn.png");
+        restartBtn = new Texture("whiteBackground.png");
+        this.bg = bg;
     }
 
     @Override
@@ -28,6 +32,12 @@ public class PauseState extends State{
         Rectangle sbBound = new Rectangle(gameCam.position.x - sbWidth/2, gameCam.position.y - sbHeight/2, sbWidth, sbHeight);
         if(Gdx.input.justTouched() && sbBound.contains(Gdx.input.getX(), Gdx.input.getY())){
             sm.pop(this);
+        }
+
+        Rectangle rbBound = new Rectangle(gameCam.position.x - sbWidth/2,gameCam.position.y + sbHeight,sbWidth,sbHeight);
+        if(Gdx.input.justTouched() && rbBound.contains(Gdx.input.getX(),Gdx.input.getY())){
+            sm.remove(1);
+            sm.set(new StartScreenState(sm));
         }
     }
 
@@ -39,7 +49,9 @@ public class PauseState extends State{
     @Override
     protected void render(SpriteBatch sb) {
         sb.begin();
+        sb.draw(bg,0,0,1920,1080);
         sb.draw(startBtn, gameCam.position.x - sbWidth/2, gameCam.position.y - sbHeight/2, sbWidth, sbHeight);
+        sb.draw(restartBtn,gameCam.position.x - sbWidth/2,gameCam.position.y - sbHeight*2,sbWidth,sbHeight);
         sb.end();
     }
 

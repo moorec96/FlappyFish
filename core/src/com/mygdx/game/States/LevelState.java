@@ -210,7 +210,7 @@ public abstract class LevelState extends State{
         if(Gdx.input.justTouched()) {
             if(inputEnabled) {
                 if(pauseBtnBox.contains(Gdx.input.getX(),Gdx.input.getY())){
-                    sm.push(new PauseState(sm));
+                    sm.push(new PauseState(sm,bg));
                 }
                 else{
                     fish.jump();

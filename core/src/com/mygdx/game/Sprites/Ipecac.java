@@ -22,6 +22,8 @@ public class Ipecac {
 
     private boolean empty;
 
+    private boolean goUp, goDown;
+
     public Ipecac(int startX){
         ipecacImg = new Texture("whiteBackground.png");
         this.startX = startX;
@@ -30,16 +32,25 @@ public class Ipecac {
         y = getRandomNum(75, FishGameDemo.HEIGHT);
         collisionBox = new Rectangle(x,y,75,75);
         empty = false;
+        goUp = true;
+        goDown = false;
     }
 
     public void move(){
         x -= 6;
-        if(x < 50){
+        if(x < -75){
             x = startX;
             y = getRandomNum(75,FishGameDemo.HEIGHT);
             empty = false;
         }
+        if(goUp){
+            y += 4;
+        }
+        else{
+            y -= 4;
+        }
         collisionBox.setPosition(x,y);
+        checkYPos();
     }
 
     public int getRandomNum(int min, int max){
@@ -73,4 +84,20 @@ public class Ipecac {
     public boolean isEmpty() {
         return empty;
     }
+
+    public void checkYPos(){
+        if(goUp){
+            if(y > 1025) {
+                goUp = false;
+                goDown = true;
+            }
+        }
+        else if(goDown){
+            if(y < 25){
+                goDown = false;
+                goUp = true;
+            }
+        }
+    }
+
 }
