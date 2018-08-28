@@ -42,7 +42,11 @@ public class Fish {
 
     private boolean jumping;
 
+    private int lives;
+
   //  private float fishRotation = 0;
+
+
 
     public Fish(){
         gravityOn = false;
@@ -62,6 +66,7 @@ public class Fish {
         jumpHeight = 700;
         health = 1;
         jumping = false;
+        lives = 3;
 //        collisionBoxSprt = new Sprite(collisionBoxImg);
 //        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
     }
@@ -223,6 +228,18 @@ public class Fish {
 
     public void adjustFishWidth(int width){
         fishWidth -= width;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
+    }
+
+    public void loseLife(){
+        lives--;
     }
 
     //    public float getRotation(){

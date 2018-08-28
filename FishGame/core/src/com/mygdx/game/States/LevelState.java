@@ -8,6 +8,7 @@ package com.mygdx.game.States;
         import com.badlogic.gdx.graphics.g2d.SpriteBatch;
         import com.badlogic.gdx.math.Rectangle;
         import com.badlogic.gdx.utils.Array;
+        import com.badlogic.gdx.utils.Timer;
         import com.mygdx.game.FishGameDemo;
         import com.mygdx.game.Sprites.EnemyBird;
         import com.mygdx.game.Sprites.Fish;
@@ -95,6 +96,8 @@ public abstract class LevelState extends State{
 
     protected int fishGrowPercentage;
 
+    private boolean hitDelay;
+
 
     /**
      * Initializes Level variables including textures and camera size
@@ -142,6 +145,7 @@ public abstract class LevelState extends State{
         }
         currentBGWidth = camWidth * 2;
         currentBGHeight = camHeight * 2;
+        hitDelay = false;
     }
 
     /**
@@ -304,7 +308,14 @@ public abstract class LevelState extends State{
 
                             fishEatenCount++;
                         } else {
-                           gameOver();
+                            if(!hitDelay) {
+                                hitDelay = true;
+                                fish.loseLife();
+                                startCountDown();
+                            }
+                            if(fish.getLives() <= 0) {
+                                gameOver();
+                            }
                         }
                     }
                 }
@@ -362,6 +373,7 @@ public abstract class LevelState extends State{
         font.draw(sb,currentLevelName,150,camHeight - 10);
         font.draw(sb,"Fish Eaten: " + fishEatenCount,150,camHeight - 50);
         font.draw(sb,"Fish Size: " + fish.getFishWeight() + " lbs.",150, camHeight - 90);
+        font.draw(sb,"Lives: " + fish.getLives(),150,camHeight-130);
         sb.draw(pauseBtn,35,camHeight - 110,100,100);
         sb.end();
     }
@@ -456,6 +468,15 @@ public abstract class LevelState extends State{
             }
         }
         return highestFish;
+    }
+
+    public void startCountDown(){
+        Timer.schedule(new Timer.Task(){
+            @Override
+            public void run(){
+                hitDelay = false;
+            }
+        },1f);
     }
 
     /**
