@@ -44,9 +44,9 @@ public class Fish {
 
     private int lives;
 
+    private boolean shieldOn;
+
   //  private float fishRotation = 0;
-
-
 
     public Fish(){
         gravityOn = false;
@@ -67,6 +67,7 @@ public class Fish {
         health = 1;
         jumping = false;
         lives = 3;
+        shieldOn = false;
 //        collisionBoxSprt = new Sprite(collisionBoxImg);
 //        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
     }
@@ -222,11 +223,11 @@ public class Fish {
         return originalFishHeight;
     }
 
-    public void adjustFishHeight(int height){
+    public void adjustFishHeight(float height){
         fishHeight -= height;
     }
 
-    public void adjustFishWidth(int width){
+    public void adjustFishWidth(float width){
         fishWidth -= width;
     }
 
@@ -241,6 +242,15 @@ public class Fish {
     public void loseLife(){
         lives--;
     }
+
+    public boolean isShieldOn() {
+        return shieldOn;
+    }
+
+    public void setShieldOn(boolean shieldOn) {
+        this.shieldOn = shieldOn;
+    }
+
 
     //    public float getRotation(){
 //        return fishRotation;

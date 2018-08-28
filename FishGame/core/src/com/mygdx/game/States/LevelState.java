@@ -19,6 +19,8 @@ package com.mygdx.game.States;
         import com.mygdx.game.Sprites.E4;
         import com.mygdx.game.Sprites.E1;
         import com.mygdx.game.Sprites.E2;
+        import com.mygdx.game.Sprites.Shield;
+
         import java.util.Random;
 
 /**
@@ -86,6 +88,8 @@ public abstract class LevelState extends State{
 
     private Ipecac ipecac;
 
+    private Shield shield;
+
     private boolean levelLive;
 
     private float rotation;
@@ -97,6 +101,7 @@ public abstract class LevelState extends State{
     protected int fishGrowPercentage;
 
     private boolean hitDelay;
+
 
 
     /**
@@ -133,6 +138,8 @@ public abstract class LevelState extends State{
         if(!level.equals(Level.Level1)) {
             ipecac = new Ipecac(FishGameDemo.WIDTH * 2);
         }
+        shield = new Shield(FishGameDemo.WIDTH * 3);
+
         levelLive = true;
         rotation  = 0;
         fishEatenCount = currentScore;
@@ -308,12 +315,12 @@ public abstract class LevelState extends State{
 
                             fishEatenCount++;
                         } else {
-                            if(!hitDelay) {
+                            if(fish.isShieldOn()) {
                                 hitDelay = true;
-                                fish.loseLife();
+                                fish.setShieldOn(false);
                                 startCountDown();
                             }
-                            if(fish.getLives() <= 0) {
+                            else {
                                 gameOver();
                             }
                         }
@@ -401,10 +408,10 @@ public abstract class LevelState extends State{
      */
     public void levelIntro(){
         if(fish.getFishWidth() > fish.getOriginalFishWidth()){
-            fish.adjustFishWidth(1);
+            fish.adjustFishWidth(1f);
         }
         if(fish.getFishHeight() > fish.getOriginalFishHeight()){
-            fish.adjustFishHeight(1);
+            fish.adjustFishHeight(1f);
         }
         if(currentBGWidth > camWidth && currentBGHeight > camHeight){
             currentBGWidth -= 25;
