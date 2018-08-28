@@ -295,6 +295,7 @@ public abstract class LevelState extends State{
             if(levelLive && !currentLevel.equals(Level.Level1)) {
                 ipecac.move();
             }
+            shield.move();
             if (!fishInPosition) {
                 levelIntro();
             }
@@ -317,8 +318,8 @@ public abstract class LevelState extends State{
                         } else {
                             if(fish.isShieldOn()) {
                                 hitDelay = true;
-                                fish.setShieldOn(false);
                                 startCountDown();
+                                fish.setShieldOn(false);
                             }
                             else {
                                 gameOver();
@@ -331,6 +332,10 @@ public abstract class LevelState extends State{
                         fish.throwUp();
                         ipecac.setEmpty(true);
                     }
+                }
+                if (shield.getCollisionBox().overlaps(fish.getCollisionBox()) && !shield.isEmpty()) {
+                    fish.setShieldOn(true);
+                    shield.setEmpty(true);
                 }
             }
         }
@@ -355,10 +360,12 @@ public abstract class LevelState extends State{
             sb.draw(current.getSprite(),current.getPosition().x,current.getPosition().y,current.getEnemyFishWidth(),current.getEnemyFishHeight());
         }
 
-        if(levelLive && !currentLevel.equals(Level.Level1)) {
+        if(levelLive && !currentLevel.equals(Level.Level1) && !ipecac.isEmpty()) {
             sb.draw(ipecac.getIpecacImg(), ipecac.getX(), ipecac.getY(), 75, 75);
         }
-
+        if(!shield.isEmpty()) {
+            sb.draw(shield.getShieldImg(), shield.getX(), shield.getY(), 75, 75);
+        }
         //Health Bar
         if(fish.getHealth() > 0.5f) {
             sb.setColor(Color.GREEN);
@@ -380,7 +387,7 @@ public abstract class LevelState extends State{
         font.draw(sb,currentLevelName,150,camHeight - 10);
         font.draw(sb,"Fish Eaten: " + fishEatenCount,150,camHeight - 50);
         font.draw(sb,"Fish Size: " + fish.getFishWeight() + " lbs.",150, camHeight - 90);
-        font.draw(sb,"Lives: " + fish.getLives(),150,camHeight-130);
+        font.draw(sb,"Shield: " + fish.isShieldOn(),150,camHeight-130);
         sb.draw(pauseBtn,35,camHeight - 110,100,100);
         sb.end();
     }

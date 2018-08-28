@@ -57,7 +57,7 @@ public class Shield {
         return rand.nextInt(max-min) + min;
     }
 
-    public Texture getIpecacImg() {
+    public Texture getShieldImg() {
         return shieldImg;
     }
 
