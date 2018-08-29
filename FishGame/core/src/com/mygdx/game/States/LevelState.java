@@ -316,10 +316,14 @@ public abstract class LevelState extends State{
 
                             fishEatenCount++;
                         } else {
-                            if(fish.isShieldOn()) {
-                                hitDelay = true;
-                                startCountDown();
-                                fish.setShieldOn(false);
+                            if(fish.isShieldOn() || hitDelay) {
+                                System.out.println("yaaaa");
+                                if(!hitDelay) {
+                                    System.out.println("testing");
+                                    hitDelay = true;
+                                    startCountDown();
+                                    fish.setShieldOn(false);
+                                }
                             }
                             else {
                                 gameOver();
@@ -489,8 +493,9 @@ public abstract class LevelState extends State{
             @Override
             public void run(){
                 hitDelay = false;
+                System.out.println("Hello");
             }
-        },1f);
+        },2f);
     }
 
     /**
