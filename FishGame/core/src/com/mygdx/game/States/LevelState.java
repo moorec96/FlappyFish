@@ -294,8 +294,9 @@ public abstract class LevelState extends State{
             checkFishHealth();
             if(levelLive && !currentLevel.equals(Level.Level1)) {
                 ipecac.move();
+                shield.move();
             }
-            shield.move();
+
             if (!fishInPosition) {
                 levelIntro();
             }
@@ -353,21 +354,21 @@ public abstract class LevelState extends State{
         sb.setProjectionMatrix(gameCam.combined);
         sb.begin();
         sb.draw(bg,0,0,currentBGWidth,currentBGHeight);
-//        sb.draw(fish.getCollisionBoxSprt(),fish.getCollisionBox().getX(),fish.getCollisionBox().getY(),fish.getCollisionBox().getWidth(),fish.getCollisionBox().getHeight());
+        sb.draw(fish.getCollisionBoxSprt(),fish.getCollisionBox().getX(),fish.getCollisionBox().getY(),fish.getCollisionBox().getWidth(),fish.getCollisionBox().getHeight());
         //sb.draw(fish.getSprite(),fish.getPosition().x, fish.getPosition().y,fish.getSprite().getWidth(),fish.getSprite().getHeight());
         sb.draw(fish.getTexture().getTexture(), fish.getPosition().x, fish.getPosition().y, fish.getFishWidth(), fish.getFishHeight()/2,
                 fish.getFishWidth(), fish.getFishHeight(),1,1, rotation, fish.getSprite().getRegionX(), fish.getSprite().getRegionY(),
                 fish.getSprite().getRegionWidth(), fish.getSprite().getRegionHeight(), false, false);
 
         for(EnemyBird current : enemyBirds){
-//            sb.draw(current.getCollisionBoxSprt(),current.getEnemyCollisionBox().getX(),current.getEnemyCollisionBox().getY(),current.getEnemyCollisionBox().getWidth(),current.getEnemyCollisionBox().getHeight());
+            sb.draw(current.getCollisionBoxSprt(),current.getEnemyCollisionBox().getX(),current.getEnemyCollisionBox().getY(),current.getEnemyCollisionBox().getWidth(),current.getEnemyCollisionBox().getHeight());
             sb.draw(current.getSprite(),current.getPosition().x,current.getPosition().y,current.getEnemyFishWidth(),current.getEnemyFishHeight());
         }
 
         if(levelLive && !currentLevel.equals(Level.Level1) && !ipecac.isEmpty()) {
             sb.draw(ipecac.getIpecacImg(), ipecac.getX(), ipecac.getY(), 75, 75);
         }
-        if(!shield.isEmpty()) {
+        if(levelLive && !currentLevel.equals(Level.Level1) && !shield.isEmpty()) {
             sb.draw(shield.getShieldImg(), shield.getX(), shield.getY(), 75, 75);
         }
         //Health Bar
@@ -418,6 +419,7 @@ public abstract class LevelState extends State{
      * Moves the player fish to the center of the screen(Vertically)
      */
     public void levelIntro(){
+        fish.levelLive = true;
         if(fish.getFishWidth() > fish.getOriginalFishWidth()){
             fish.adjustFishWidth(1f);
         }
@@ -429,20 +431,21 @@ public abstract class LevelState extends State{
             currentBGHeight -=10;
         }
         if(!fishInPosition){
-            fish.addFishY(-(camHeight/250));
-
+            fish.addFishX(2);
         }
-        if(fish.getPosition().y <= gameCam.position.y && fish.getFishHeight() <= fish.getOriginalFishHeight()){
+        if(fish.getPosition().x >= 150 && fish.getFishHeight() <= fish.getOriginalFishHeight()){
             fishInPosition = true;
             fish.turnOnGravity();
             inputEnabled = true;
             inIntro = false;
             fish.resetHealth();
+            fish.resetCollisionBox();
             //liveHealth = true;
             fish.setCollision(true);
             for(EnemyBird current : enemyBirds){
                current.turnOnEnemyMovement();
             }
+
         }
     }
 
@@ -452,6 +455,7 @@ public abstract class LevelState extends State{
      */
     public void levelOutro(EnemyBird highestFish){
         levelLive = false;
+        fish.levelLive = false;
         fish.setCollision(false);
         liveHealth = false;
         if(!enemyOffScreen){
@@ -468,8 +472,9 @@ public abstract class LevelState extends State{
                 fish.addFishY(camHeight / 250);
 
             }
-            if (fish.getPosition().y + fish.getFishHeight() > camHeight) {
+            if (fish.getPosition().y  > camHeight) {
                 fishOffScreen = true;
+                fish.resetPosition();
             }
         }
     }

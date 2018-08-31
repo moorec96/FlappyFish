@@ -18,7 +18,6 @@ public class Level2 extends LevelState{
         super(sm, Level.Level2, fishGap, fish,score);
         setBackgroundImage(bg);
         this.fish = fish;
-        fish.setFishY(camHeight + fish.getFishHeight());
         fishGrowPercentage = growPercentage;
     }
 

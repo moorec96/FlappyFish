@@ -18,7 +18,7 @@ public class Fish {
     private Texture collisionBoxImg;
     private FishAnimation fishAnimation;
     private Sprite fishSprite;
-//n    private Sprite collisionBoxSprt;
+    private Sprite collisionBoxSprt;
     private Vector3 position;
     private Vector3 velocity;
     private Rectangle collisionBox;
@@ -46,6 +46,8 @@ public class Fish {
 
     private boolean shieldOn;
 
+    public boolean levelLive;
+
   //  private float fishRotation = 0;
 
     public Fish(){
@@ -58,7 +60,7 @@ public class Fish {
         fishAnimation = new FishAnimation(new TextureRegion(fish),3,1f);
         fishSprite = new Sprite(fishAnimation.getFrame());
         fishSprite.setSize(fishWidth,fishHeight);
-        position = new Vector3(fishX, FishGameDemo.HEIGHT + fish.getHeight(),0);
+        position = new Vector3(0 - fishWidth, FishGameDemo.HEIGHT / 2,0);
         velocity = new Vector3(0,0,0);
         collisionBox = new Rectangle(fishX + fishWidth/4,position.y + fishHeight/4,fishWidth - fishWidth/3,fishHeight - fishHeight/3);
         collisionBoxImg = new Texture("whiteBackground.png");
@@ -68,8 +70,9 @@ public class Fish {
         jumping = false;
         lives = 3;
         shieldOn = false;
-//        collisionBoxSprt = new Sprite(collisionBoxImg);
-//        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
+        levelLive = false;
+        collisionBoxSprt = new Sprite(collisionBoxImg);
+        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
     }
 
     public void updateAnim(float dt){
@@ -94,9 +97,10 @@ public class Fish {
             position.y = 10;
         }
 
-
-        if(position.y >= LevelState.camHeight - (fishSprite.getHeight())){
-            position.y = LevelState.camHeight - (fishSprite.getHeight());
+        if(levelLive) {
+            if (position.y >= LevelState.camHeight - (fishSprite.getHeight())) {
+                position.y = LevelState.camHeight - (fishSprite.getHeight());
+            }
         }
 
         velocity.scl(1/dt);
@@ -116,11 +120,12 @@ public class Fish {
 
     public void increaseFishSize(int width, int height, int weight){
         fishWidth += width;
+
         fishHeight += height;
        // fishSprite.setScale(2);
         fishSprite.setSize(fishWidth,fishHeight);
         collisionBox.setSize(fishWidth - fishWidth/3,fishHeight - fishHeight/3);
-//        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
+        collisionBoxSprt.setSize(collisionBox.getWidth(),collisionBox.getHeight());
         fishWeight += weight / 5;
     }
 
@@ -171,6 +176,8 @@ public class Fish {
         return fishAnimation.getFrame();
     }
 
+    public void addFishX(float fishX){ position.add(fishX,0,0);}
+
     public void addFishY(float fishY){
         position.add(0,fishY,0);
     }
@@ -195,9 +202,9 @@ public class Fish {
         collisionOn = collisionStatus;
     }
 
-//    public Sprite getCollisionBoxSprt() {
-//        return collisionBoxSprt;
-//    }
+    public Sprite getCollisionBoxSprt() {
+        return collisionBoxSprt;
+    }
 
     public int getFishWeight() {
         return fishWeight;
@@ -249,6 +256,14 @@ public class Fish {
 
     public void setShieldOn(boolean shieldOn) {
         this.shieldOn = shieldOn;
+    }
+
+    public void resetPosition(){
+        position = new Vector3( 0 - fishWidth, FishGameDemo.HEIGHT / 2,0);
+    }
+
+    public void resetCollisionBox(){
+        collisionBox = new Rectangle(fishX + fishWidth/4,position.y + fishHeight/4,fishWidth - fishWidth/3,fishHeight - fishHeight/3);
     }
 
 

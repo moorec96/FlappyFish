@@ -20,8 +20,8 @@ public abstract class EnemyBird {
     protected Animation enemyAnimation;
     protected Sprite enemyFishSprite;
 
-//    private Texture collisionBoxImg;
-//    private Sprite collisionBoxSprt;
+    private Texture collisionBoxImg;
+    private Sprite collisionBoxSprt;
 
     protected int enemyFishWidth, enemyFishHeight;
     protected int enemyFishWeight;
@@ -54,9 +54,9 @@ public abstract class EnemyBird {
         enemyCollisionBox = new Rectangle(position.x + enemyFishWidth/4, enemyFishY + enemyFishHeight/4, enemyFishWidth - enemyFishWidth/2, enemyFishHeight - enemyFishHeight/2);
         enemyMoving = false;
 
-//        collisionBoxImg = new Texture("whiteBackground.png");
-//        collisionBoxSprt = new Sprite(collisionBoxImg);
-//        collisionBoxSprt.setSize(enemyCollisionBox.getWidth(),enemyCollisionBox.getHeight());
+        collisionBoxImg = new Texture("whiteBackground.png");
+        collisionBoxSprt = new Sprite(collisionBoxImg);
+        collisionBoxSprt.setSize(enemyCollisionBox.getWidth(),enemyCollisionBox.getHeight());
     }
 
     public void updateAnim(float dt){
@@ -66,7 +66,7 @@ public abstract class EnemyBird {
             position.add(enemySpeed, 0, 0);
         }
         enemyCollisionBox.setPosition(position.x + enemyFishWidth/4, enemyFishY + enemyFishHeight/4);
-//        collisionBoxSprt.setPosition(enemyCollisionBox.getX(),enemyCollisionBox.getY());
+        collisionBoxSprt.setPosition(enemyCollisionBox.getX(),enemyCollisionBox.getY());
     }
 
     public void resetFish(){
@@ -76,7 +76,7 @@ public abstract class EnemyBird {
         enemyFishY = getRandomNum(75,maxHeight);
         position.set(xSpawn,enemyFishY,0);
         enemyCollisionBox.setPosition(position.x  + enemyFishWidth/4, enemyFishY - enemyFishHeight/4);
-//        collisionBoxSprt.setPosition(enemyCollisionBox.getX(),enemyCollisionBox.getY());
+        collisionBoxSprt.setPosition(enemyCollisionBox.getX(),enemyCollisionBox.getY());
     }
 
     public void resizeFish(){
@@ -84,7 +84,7 @@ public abstract class EnemyBird {
         enemyFishWidth = enemyFishHeight + 5;
         enemyCollisionBox.setSize(enemyFishWidth - enemyFishWidth/2,enemyFishHeight - enemyFishHeight/2);
         enemyFishWeight = enemyFishWidth / 10;
-//        collisionBoxSprt.setSize(enemyCollisionBox.getWidth(),enemyCollisionBox.getHeight());
+        collisionBoxSprt.setSize(enemyCollisionBox.getWidth(),enemyCollisionBox.getHeight());
     }
 
 
@@ -140,9 +140,9 @@ public abstract class EnemyBird {
         enemyMoving = true;
     }
 
-//    public Sprite getCollisionBoxSprt() {
-//        return collisionBoxSprt;
-//    }
+    public Sprite getCollisionBoxSprt() {
+        return collisionBoxSprt;
+    }
 
     public void turnOffEnemyMovement(){
         enemyMoving = false;
