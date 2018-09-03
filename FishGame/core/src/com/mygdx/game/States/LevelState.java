@@ -19,6 +19,7 @@ package com.mygdx.game.States;
         import com.mygdx.game.Sprites.E4;
         import com.mygdx.game.Sprites.E1;
         import com.mygdx.game.Sprites.E2;
+        import com.mygdx.game.Sprites.Mountain;
         import com.mygdx.game.Sprites.Shield;
 
         import java.util.Random;
@@ -90,6 +91,8 @@ public abstract class LevelState extends State{
 
     private Shield shield;
 
+    private Mountain mtn;
+
     private boolean levelLive;
 
     private float rotation;
@@ -101,6 +104,7 @@ public abstract class LevelState extends State{
     protected int fishGrowPercentage;
 
     private boolean hitDelay;
+
 
 
 
@@ -153,6 +157,8 @@ public abstract class LevelState extends State{
         currentBGWidth = camWidth * 2;
         currentBGHeight = camHeight * 2;
         hitDelay = false;
+
+        mtn = new Mountain();
     }
 
     /**
@@ -343,6 +349,10 @@ public abstract class LevelState extends State{
                     shield.setEmpty(true);
                 }
             }
+            mtn.move();
+            if(checkMtnCollision()){
+                System.out.println("Mountain Collision");
+            }
         }
 
     /**
@@ -359,6 +369,10 @@ public abstract class LevelState extends State{
         sb.draw(fish.getTexture().getTexture(), fish.getPosition().x, fish.getPosition().y, fish.getFishWidth(), fish.getFishHeight()/2,
                 fish.getFishWidth(), fish.getFishHeight(),1,1, rotation, fish.getSprite().getRegionX(), fish.getSprite().getRegionY(),
                 fish.getSprite().getRegionWidth(), fish.getSprite().getRegionHeight(), false, false);
+
+        sb.draw(mtn.getMtnTexture(),mtn.getX(),mtn.getY(), mtn.getMtnSprite().getWidth()/2, mtn.getMtnSprite().getHeight()/2,
+                mtn.getMtnSprite().getWidth(), mtn.getMtnSprite().getHeight(),1,1,45,mtn.getMtnSprite().getRegionX(), mtn.getMtnSprite().getRegionY(),
+                mtn.getMtnSprite().getRegionWidth(),mtn.getMtnSprite().getRegionHeight(),false,false);
 
         for(EnemyBird current : enemyBirds){
             sb.draw(current.getCollisionBoxSprt(),current.getEnemyCollisionBox().getX(),current.getEnemyCollisionBox().getY(),current.getEnemyCollisionBox().getWidth(),current.getEnemyCollisionBox().getHeight());
@@ -501,6 +515,17 @@ public abstract class LevelState extends State{
                 System.out.println("Hello");
             }
         },2f);
+    }
+
+    public boolean checkMtnCollision(){
+
+        if(fish.getSprite().getX() > mtn.getX() && fish.getSprite().getX() < mtn.getMtnSprite().getX() + mtn.getMtnSprite().getWidth()
+                && fish.getSprite().getY() < mtn.getMtnSprite().getY() && fish.getSprite().getY() > mtn.getMtnSprite().getY() -
+                mtn.getMtnSprite().getHeight()){
+            return true;
+        }
+
+        return false;
     }
 
     /**
